@@ -1,0 +1,58 @@
+* {
+    margin: 0px;
+}
+
+:root {
+    --hover-col: rgb(231, 220, 255);
+    --active-col: rgb(137, 132, 206);
+    --light-col: rgb(250, 245, 255);
+    --light-col-fade: rgba(250, 245, 255, 0.5);
+    --dark-col: rgb(71, 77, 133);
+    --darker-col: rgb(24, 26, 34);
+}
+
+.bg {
+    background-color: var(--dark-col);
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: min(50vh, 50vw);
+    grid-template-rows: min(50vh, 50vw);
+    box-shadow: 5px 5px 64px var(--darker-col) inset;
+}
+
+.board {
+    background-color: var(--dark-col);
+    display: grid;
+    padding: min(2vh, 2vw);
+    gap: max(min(2vh, 2vw), 5px);
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    border-radius: 6px;
+    box-shadow: 2px 2px 2px var(--dark-col), -2px -2px 2px var(--dark-col), 
+        1px 1px 128px var(--light-col-fade), -1px -1px 128px var(--light-col-fade);
+}
+
+.cell {
+    background-color: var(--light-col);
+    border-radius: 2px;
+    box-shadow: 1px 1px 2px var(--light-col);
+    display: grid;
+}
+
+.cell:hover:not(.game-over) {
+    background-color: var(--hover-col);
+    box-shadow: 1px 1px 2px var(--hover-col);
+}
+
+.cell:active:not(.game-over) {
+    background-color: var(--active-col);
+    box-shadow: 1px 1px 2px var(--active-col);
+}
+
+svg {
+    fill: var(--dark-col);
+    background-color: #00000000;
+    filter: drop-shadow(3px 3px 3px var(--dark-col));
+}

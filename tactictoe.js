@@ -24,6 +24,32 @@ const board = (function() {
     //let turnIdx = -1;
     let turnIdx = 0;
     let possibleMoves = null;
+    let gameOver = false;
+
+    const xTemplate = document.querySelector("#x-svg");
+    const oTemplate = document.querySelector("#o-svg");
+    const xSvg = xTemplate.content.cloneNode(true).querySelector("svg");
+    const oSvg = oTemplate.content.cloneNode(true).querySelector("svg");
+
+    const playerSymbol = [
+        xSvg,
+        oSvg
+    ];
+
+    const cell = document.querySelectorAll(".cell");
+    cell.forEach(e => {
+        e.addEventListener("click", f => {
+            if (player[playerTurn].cpuLvl < 0) {
+                placeMarker(playerTurn, Number(e.getAttribute("x")), 
+                    Number(e.getAttribute("y")));
+            } else {
+                // Set up a different way to prompt CPU.
+                player[playerTurn].promptCpuMove();
+            }
+        });
+    });
+
+
     const space = [
         [ -1, -1, -1 ],
         [ -1, -1, -1 ],
@@ -160,6 +186,8 @@ const board = (function() {
     const startNextTurn = function(_winLine) {
         //console.log("Starting turn");
         if (endGame(_winLine)) {
+            gameOver = true;
+            disableCells();
             console.log("Game is over");
         } else {
             turnIdx++;
@@ -171,8 +199,12 @@ const board = (function() {
         logGrid();
     }
     const placeMarker = function(_playerIdx, _x, _y) {
-        if (possibleMoves[_x][_y].valid && _playerIdx == playerTurn) {
+        if (!gameOver && 
+                possibleMoves[_x][_y].valid && 
+                _playerIdx == playerTurn) {
             space[_x][_y] = _playerIdx;
+            let moveCell = document.querySelector(`.x${_x}y${_y}`);
+            moveCell.appendChild(playerSymbol[playerTurn].cloneNode(true));
             startNextTurn(possibleMoves[_x][_y].winLine);
         } else {
             console.log("Invalid move");
@@ -195,6 +227,11 @@ const board = (function() {
         for (let y = 0; y < 3; y++) {
             console.log(`${space[0][y]} ${space[1][y]} ${space[2][y]}`);
         }
+    }
+    const disableCells = function() {
+        cell.forEach(e => {
+            e.classList.add("game-over");
+        });
     }
 
     //playerTurn = getFirstPlayer();
