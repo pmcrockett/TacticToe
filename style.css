@@ -41,12 +41,12 @@
     display: grid;
 }
 
-.cell:hover:not(.game-over) {
+.board:not(.game-over) > .cell:hover {
     background-color: var(--hover-col);
     box-shadow: 1px 1px 2px var(--hover-col);
 }
 
-.cell:active:not(.game-over) {
+.board:not(.game-over) > .cell:active {
     background-color: var(--active-col);
     box-shadow: 1px 1px 2px var(--active-col);
 }
@@ -55,4 +55,10 @@ svg {
     fill: var(--dark-col);
     background-color: #00000000;
     filter: drop-shadow(3px 3px 3px var(--dark-col));
+}
+
+.win > svg {
+    fill: var(--active-col);
+    background-color: #00000000;
+    filter: drop-shadow(3px 3px 3px var(--active-col));
 }

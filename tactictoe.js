@@ -26,6 +26,7 @@ const board = (function() {
     let possibleMoves = null;
     let gameOver = false;
 
+    const boardDiv = document.querySelector(".board");
     const xTemplate = document.querySelector("#x-svg");
     const oTemplate = document.querySelector("#o-svg");
     const xSvg = xTemplate.content.cloneNode(true).querySelector("svg");
@@ -137,7 +138,7 @@ const board = (function() {
         // Higher CPU levels prioritize winning over blocking you and are better
         // at recognizing when the final space in a line isn't worth filling.
         const plScoreVal = [
-            0, // If the CPU doesn't have any marks in the line.
+            0, // If the player doesn't have any marks in the line.
             _cpuLvl < 1 ? 1 : _cpuLvl < 2 ? 2 : 4, // One mark in the line.
             999 // Two marks in the line.
         ];
@@ -159,8 +160,8 @@ const board = (function() {
             }
         }
         if (opScoreIdx == 1 && plScoreIdx == 1) {
-            // Lower levels are more eager to fill the last space in a line even
-            // with no clear benefit.
+            // Lower CPU levels are more eager to fill the last space in a line 
+            // even with no clear benefit.
             return {
                 score: _cpuLvl < 1 ? 3 : _cpuLvl < 2 ? 2 : 1,
                 winLine: -1
@@ -176,7 +177,6 @@ const board = (function() {
         }
     }
     const getFirstPlayer = function() {
-        // Returns 1 or 2
         playerTurn = Math.floor(Math.random() * 2);
         return playerTurn;
     }
@@ -188,6 +188,7 @@ const board = (function() {
         if (endGame(_winLine)) {
             gameOver = true;
             disableCells();
+            highlightWinLine(_winLine);
             console.log("Game is over");
         } else {
             turnIdx++;
@@ -201,7 +202,8 @@ const board = (function() {
     const placeMarker = function(_playerIdx, _x, _y) {
         if (!gameOver && 
                 possibleMoves[_x][_y].valid && 
-                _playerIdx == playerTurn) {
+                _playerIdx == playerTurn
+            ) {
             space[_x][_y] = _playerIdx;
             let moveCell = document.querySelector(`.x${_x}y${_y}`);
             moveCell.appendChild(playerSymbol[playerTurn].cloneNode(true));
@@ -229,8 +231,14 @@ const board = (function() {
         }
     }
     const disableCells = function() {
-        cell.forEach(e => {
-            e.classList.add("game-over");
+        boardDiv.classList.add("game-over");
+    }
+    const highlightWinLine = function(_winLine) {
+        _winLine.forEach(e => {
+            line[e].forEach(f => {
+                let winCell = boardDiv.querySelector(`.x${f[0]}y${f[1]}`);
+                winCell.classList.add("win");
+            });
         });
     }
 
