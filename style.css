@@ -1,5 +1,11 @@
+@font-face {
+    font-family: Lemon-Regular;
+    src: url(./resources/Lemon-Regular.ttf);
+  }
+
 * {
     margin: 0px;
+    font-family: Lemon-Regular, Arial, Helvetica, sans-serif;
 }
 
 :root {
@@ -9,6 +15,21 @@
     --light-col-fade: rgba(250, 245, 255, 0.5);
     --dark-col: rgb(71, 77, 133);
     --darker-col: rgb(24, 26, 34);
+    /* --icon-col:rgba(24, 26, 34, 0.295); */
+    --icon-col:rgba(65, 74, 153, 0.295);
+    --message-col: rgba(250, 245, 255, 0.97);
+    --message-font-size: min(3.5vh, 3.5vw);
+    --message-choice-font-size: min(2vh, 2vw);
+    --padding: min(2vh, 2vw);
+    --padding-2x: calc(var(--padding) * 2);
+    --game-width: min(60vh, 60vw);
+    --game-padded-width: calc(var(--game-width) + var(--padding-2x));
+    --scoreboard-height: min(20vh, 20vw);
+    --scoreboard-padded-height: calc(var(--scoreboard-height) + var(--padding-2x));
+    --board-height: min(60vh, 60vw);
+    --board-padded-height: calc(var(--board-height) + var(--padding-2x));
+    --scoreboard-font-size: min(3vh, 3vw);
+    user-select: none;
 }
 
 .bg {
@@ -17,21 +38,193 @@
     display: grid;
     justify-content: center;
     align-content: center;
-    grid-template-columns: min(50vh, 50vw);
-    grid-template-rows: min(50vh, 50vw);
+    /* grid-template-columns: min(50vh, 50vw); */
+    /* grid-template-rows: min(60vh, 60vw); */
+    /* grid-template-rows: min(50vh, 50vw); */
     box-shadow: 5px 5px 64px var(--darker-col) inset;
 }
 
-.board {
-    background-color: var(--dark-col);
+.title-pane {
+    grid-area: 1 / 1 / 2 / 2;
+    padding: var(--padding);
+    /* height: 120px; */
+    border-radius: 6px 6px 0px 0px;
+    background-color: var(--light-col);
     display: grid;
-    padding: min(2vh, 2vw);
+    column-gap: calc(var(--game-width) / 3);
+    grid-template-columns: calc(var(--game-width) / 3) calc(var(--game-width) / 3);
+    grid-template-rows: auto auto;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    /* grid-area: 1 / 1 / 1 / 4; */
+    color: var(--light-col);
+}
+
+.icon-pane {
+    grid-area: 2 / 1 / 3 / 2;
+    background-color: var(--dark-col);
+    height: min(60vh, 60vw);
+    width: min(60vh, 60vw);
+    display: grid;
+    padding: var(--padding);
+    gap: calc(var(--game-padded-width) / 7);
+    grid-template-columns: 1fr 1fr;
+    /* grid-template-rows: min(10vh, 10vw) 1fr 1fr 1fr; */
+    grid-template-rows: 1fr;
+    border-radius: 0px 0px 6px 6px;
+    /* box-shadow: 0px 2px 20px var(--dark-col), 0px -2px 20px var(--dark-col), 
+        0px 20px 128px var(--light-col-fade), 0px -1px 20px var(--light-col-fade); */
+    box-shadow: 0px -2px 20px var(--dark-col), 
+        0px -10px 48px var(--light-col-fade);
+}
+
+.icon-select {
+    display: grid;
+    gap: max(min(0.5vh, 0.5vw), 2px);
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.game:not(.hidden), .menu:not(.hidden) {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    grid-template-columns: var(--game-padded-width);
+    grid-template-rows: var(--scoreboard-padded-height) var(--board-padded-height);
+    /* background-color: var(--dark-col); */
+    border-radius: 6px;
+    box-shadow: -16px -16px 20px var(--dark-col), 16px -16px 20px var(--dark-col),
+        0px 8px 20px var(--dark-col), 
+        20px 2px 96px var(--light-col-fade), -20px -20px 96px var(--light-col-fade);
+}
+
+.game.hidden, .menu.hidden {
+    display: none;
+}
+
+.board {
+    grid-area: 2 / 1 / 3 / 2;
+    background-color: var(--dark-col);
+    height: min(60vh, 60vw);
+    width: min(60vh, 60vw);
+    display: grid;
+    padding: var(--padding);
     gap: max(min(2vh, 2vw), 5px);
     grid-template-columns: 1fr 1fr 1fr;
+    /* grid-template-rows: min(10vh, 10vw) 1fr 1fr 1fr; */
     grid-template-rows: 1fr 1fr 1fr;
-    border-radius: 6px;
-    box-shadow: 2px 2px 2px var(--dark-col), -2px -2px 2px var(--dark-col), 
-        1px 1px 128px var(--light-col-fade), -1px -1px 128px var(--light-col-fade);
+    border-radius: 0px 0px 6px 6px;
+    /* box-shadow: 0px 2px 20px var(--dark-col), 0px -2px 20px var(--dark-col), 
+        0px 20px 128px var(--light-col-fade), 0px -1px 20px var(--light-col-fade); */
+    box-shadow: 0px -2px 20px var(--dark-col), 
+        0px -10px 48px var(--light-col-fade);
+}
+
+.message.hidden {
+    display: none;
+}
+
+.message:not(hidden) {
+    color: var(--dark-col);
+    font-size: var(--message-choice-font-size);
+    grid-area: 1 / 1 / 2 / 2;
+    padding: var(--padding);
+    border-radius: 6px 6px 0px 0px;
+    background-color: var(--message-col);
+    box-shadow: 0px -2px 20px var(--light-col), 
+        0px -10px 48px var(--light-col);
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 2fr 1fr;
+    justify-items: center;
+    align-items: center;
+}
+
+.message > .text {
+    grid-area: 1 / 1 / 1 / 3;
+    font-size: var(--message-font-size);
+}
+
+.play-again, .back-to-menu, .text {
+    filter: drop-shadow(3px 3px 3px var(--active-col));
+}
+
+.play-again:hover, .back-to-menu:hover {
+    color: var(--hover-col);
+    filter: drop-shadow(3px 3px 3px var(--darker-col));
+    cursor: pointer;
+}
+
+.play-again:active, .back-to-menu:active {
+    color: var(--active-col);
+    filter: drop-shadow(3px 3px 3px var(--darker-col));
+    cursor: pointer;
+}
+
+.scoreboard {
+    grid-area: 1 / 1 / 2 / 2;
+    padding: var(--padding);
+    /* height: 120px; */
+    border-radius: 6px 6px 0px 0px;
+    background-color: var(--dark-col);
+    display: grid;
+    column-gap: calc(var(--game-width) / 3);
+    grid-template-columns: calc(var(--game-width) / 3) calc(var(--game-width) / 3);
+    grid-template-rows: auto auto;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    /* grid-area: 1 / 1 / 1 / 4; */
+    color: var(--light-col);
+}
+
+.name, .score {
+    filter: drop-shadow(3px 3px 3px var(--light-col));
+}
+
+.name {
+    font-size: var(--scoreboard-font-size);
+    align-self: end;
+    text-align: center;
+}
+
+.name.pl0 {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.name.pl1 {
+    grid-area: 1 / 2 / 2 / 3;
+}
+
+.pl-svg.pl0 {
+    grid-area: 1 / 1 / 3 / 2;
+    width: 100%;
+}
+
+.pl-svg > svg {
+    fill: var(--icon-col);
+    background-color: #00000000;
+    filter: drop-shadow(3px 3px 3px var(--darker-col));
+}
+
+.pl-svg.pl1 {
+    grid-area: 1 / 2 / 3 / 3;
+    width: 100%;
+}
+
+.score {
+    font-size: calc(var(--scoreboard-font-size) * 2);
+    align-self: start;
+}
+
+.score.pl0 {
+    grid-area: 2 / 1 / 3 / 2;
+}
+
+.score.pl1 {
+    grid-area: 2 / 2 / 3 / 3;
 }
 
 .cell {
@@ -41,15 +234,61 @@
     display: grid;
 }
 
-.board:not(.game-over) > .cell:hover {
+.board:not(.game-over) > .cell.selectable:hover, 
+.icon-select > .cell:hover:not(.selected) {
     background-color: var(--hover-col);
     box-shadow: 1px 1px 2px var(--hover-col);
+    cursor: pointer;
 }
 
-.board:not(.game-over) > .cell:active {
+.board:not(.game-over) > .cell.selectable:active,
+.icon-select > .cell:active:not(.selected), .icon-select > .cell.selected {
     background-color: var(--active-col);
     box-shadow: 1px 1px 2px var(--active-col);
+    cursor: pointer;
 }
+
+.icon-pane > .icon-select > .cell.selected {
+    cursor: auto;
+}
+
+.icon-pane > .icon-select > .cell.other-selected {
+    background-color: var(--light-col-fade);
+    box-shadow: 1px 1px 2px var(--light-col-fade);
+    cursor: auto;
+}
+
+.cell.other-selected {
+    position: relative;
+}
+
+.cell.other-selected > svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    fill: var(--darker-col);
+    background-color: #00000000;
+    filter: drop-shadow(3px 3px 3px var(--darker-col));
+}
+
+.cell.other-selected > svg.cancel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    fill: var(--dark-col);
+    background-color: #00000000;
+    filter: drop-shadow(3px 3px 3px var(--dark-col));
+}
+
+.cell.selected > svg {
+    fill: var(--hover-col);
+    background-color: #00000000;
+    filter: drop-shadow(3px 3px 3px var(--hover-col));
+}
+
+
 
 svg {
     fill: var(--dark-col);
