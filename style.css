@@ -44,6 +44,10 @@
     box-shadow: 5px 5px 64px var(--darker-col) inset;
 }
 
+.text {
+    filter: drop-shadow(2px 2px 2px var(--dark-col));
+}
+
 .title-pane {
     color: var(--dark-col);
     grid-area: 1 / 1 / 2 / 2;
@@ -63,7 +67,8 @@
     box-shadow: 0px -2px 20px var(--hover-col), 
         0px -10px 48px var(--hover-col);
 }
- .title-header {
+
+.title-header {
     font-size: min(4.5vh, 4.5vw);
     text-align: center;
  }
@@ -92,6 +97,7 @@
     margin-top: max(min(0.5vh, 0.5vw), 2px);
     margin-bottom: max(min(0.5vh, 0.5vw), 2px);
     font-size: min(1.5vh, 1.5vw);
+    filter: drop-shadow(1px 1px 2px var(--dark-col));
 }
 
 .icon-pane {
@@ -127,12 +133,12 @@
 }
 
 .title-footer {
-    /* margin-top: max(min(1vh, 1vw), 4px); */
     align-self: end;
     justify-self: end;
 }
 
-.title-footer > .cell {
+.title-footer > .cell,
+.message > .light-bg-button.cell {
     font-size: var(--message-choice-font-size);
     padding: calc(var(--padding) * 0.5);
 }
@@ -189,9 +195,9 @@
     grid-area: 1 / 1 / 2 / 2;
     padding: var(--padding);
     border-radius: 6px 6px 0px 0px;
-    background-color: var(--message-col);
-    box-shadow: 0px -2px 20px var(--light-col), 
-        0px -10px 48px var(--light-col);
+    background-color: var(--hover-col);
+    box-shadow: 0px -2px 20px var(--hover-col), 
+        0px -10px 48px var(--hover-col);
     z-index: 10;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -205,22 +211,6 @@
     font-size: var(--message-font-size);
 }
 
-.play-again, .back-to-menu, .text {
-    filter: drop-shadow(3px 3px 3px var(--active-col));
-}
-
-.play-again:hover, .back-to-menu:hover {
-    color: var(--hover-col);
-    filter: drop-shadow(3px 3px 3px var(--darker-col));
-    cursor: pointer;
-}
-
-.play-again:active, .back-to-menu:active {
-    color: var(--active-col);
-    filter: drop-shadow(3px 3px 3px var(--darker-col));
-    cursor: pointer;
-}
-
 .scoreboard {
     grid-area: 1 / 1 / 2 / 2;
     padding: var(--padding);
@@ -228,7 +218,7 @@
     border-radius: 6px 6px 0px 0px;
     background-color: var(--dark-col);
     display: grid;
-    column-gap: calc(var(--game-width) / 3);
+    /* column-gap: calc(var(--game-width) / 3); */
     grid-template-columns: calc(var(--game-width) / 3) calc(var(--game-width) / 3);
     grid-template-rows: auto auto;
     justify-items: center;
@@ -238,8 +228,36 @@
     color: var(--light-col);
 }
 
-.name, .score {
-    filter: drop-shadow(3px 3px 3px var(--light-col));
+.scoreboard > .back-to-menu {
+    grid-area: 1 / 1 / 2 / 2;
+    width: 15%;
+    justify-self: start;
+    align-self: start;
+    z-index: 9;
+}
+
+.scoreboard > .back-to-menu > svg {
+    width: 100%;
+    fill: var(--light-col);
+    filter: drop-shadow(1px 1px 1px var(--light-col));
+    cursor: pointer;
+    /* top: -20px; */
+}
+
+.scoreboard > .back-to-menu:hover > svg {
+    fill: var(--hover-col);
+    background-color: #00000000;
+    filter: drop-shadow(1px 1px 1px var(--hover-col));
+}
+
+.scoreboard > .back-to-menu:active > svg {
+    fill: var(--active-col);
+    background-color: #00000000;
+    filter: drop-shadow(1px 1px 1px var(--active-col));
+}
+
+.name, .score, .current-player {
+    filter: drop-shadow(2px 2px 2px var(--light-col));
 }
 
 .name {
@@ -252,8 +270,9 @@
     grid-area: 1 / 1 / 2 / 2;
 }
 
+
 .name.pl1 {
-    grid-area: 1 / 2 / 2 / 3;
+    grid-area: 1 / 3 / 2 / 4;
 }
 
 .pl-svg.pl0 {
@@ -268,7 +287,7 @@
 }
 
 .pl-svg.pl1 {
-    grid-area: 1 / 2 / 3 / 3;
+    grid-area: 1 / 3 / 3 / 4;
     width: 100%;
 }
 
@@ -282,7 +301,34 @@
 }
 
 .score.pl1 {
+    grid-area: 2 / 3 / 3 / 4;
+}
+
+.current-player {
+    grid-area: 1 / 2 / 2 / 3;
+    align-self: center;
+    justify-self: center;
+}
+
+.current-player-arrow {
     grid-area: 2 / 2 / 3 / 3;
+    display: grid;
+    align-items: start;
+    justify-items: center;
+}
+
+.current-player-arrow > svg {
+    width: 30%;
+    fill: var(--light-col);
+    background-color: #00000000;
+    filter: drop-shadow(2px 2px 2px var(--light-col));
+    position: relative;
+    bottom: min(5vh, 5vw);
+    left: -8.88%;
+}
+
+.current-player-arrow > svg.right {
+    left: 8.88%;
 }
 
 .cell {
@@ -292,9 +338,13 @@
     display: grid;
 }
 
-.board:not(.game-over) > .cell.selectable:hover, 
+.board.cpu-turn {
+    cursor: wait;
+}
+
+.board:not(.game-over):not(.cpu-turn) > .cell.selectable:hover, 
 .icon-select > .cell:hover:not(.selected),
-.title-pane .cell:hover:not(.selected) {
+.light-bg-button.cell:hover:not(.selected) {
     background-color: var(--hover-col);
     box-shadow: 1px 1px 4px var(--active-col);
     cursor: pointer;
@@ -305,33 +355,34 @@
     cursor: pointer;
 }
 
-.board:not(.game-over) > .cell.selectable:active,
+.board:not(.game-over):not(.cpu-turn) > .cell.selectable:active,
 .icon-select > .cell:active:not(.selected),
 .icon-select > .cell.selected,
-.title-pane .cell:active:not(.selected),
-.title-pane .cell.selected {
+.light-bg-button.cell:active:not(.selected),
+.light-bg-button.cell.selected {
     background-color: var(--active-col);
     box-shadow: 1px 1px 4px var(--active-col);
     cursor: pointer;
 }
 
-.title-pane .cell:active:not(.selected),
-.title-pane .cell.selected {
+.light-bg-button.cell:active:not(.selected),
+.light-bg-button.cell.selected {
     box-shadow: 1px 1px 4px var(--dark-col);
 }
 
-.title-pane .cell {
+.light-bg-button.cell {
     display: grid;
     /* justify-content: center; */
     align-content: center;
     text-align: center;
+    border-radius: min(1vh, 1vw);
 }
 
 .icon-pane > .icon-select > .cell.selected {
     cursor: auto;
 }
 
-.title-pane .cell.selected {
+.light-bg-button.cell.selected {
     cursor: auto;
 }
 
@@ -352,7 +403,7 @@
     width: 100%;
     fill: var(--darker-col);
     background-color: #00000000;
-    filter: drop-shadow(3px 3px 3px var(--darker-col));
+    filter: drop-shadow(2px 2px 2px var(--darker-col));
 }
 
 .cell.other-selected > svg.cancel {
@@ -362,23 +413,23 @@
     width: 100%;
     fill: var(--dark-col);
     background-color: #00000000;
-    filter: drop-shadow(3px 3px 3px var(--dark-col));
+    filter: drop-shadow(2px 2px 2px var(--dark-col));
 }
 
 .cell.selected > svg {
     fill: var(--hover-col);
     background-color: #00000000;
-    filter: drop-shadow(3px 3px 3px var(--hover-col));
+    filter: drop-shadow(2px 2px 2px var(--hover-col));
 }
 
 svg {
     fill: var(--dark-col);
     background-color: #00000000;
-    filter: drop-shadow(3px 3px 3px var(--dark-col));
+    filter: drop-shadow(2px 2px 2px var(--dark-col));
 }
 
 .win > svg {
     fill: var(--active-col);
     background-color: #00000000;
-    filter: drop-shadow(3px 3px 3px var(--active-col));
+    filter: drop-shadow(2px 2px 2px var(--active-col));
 }

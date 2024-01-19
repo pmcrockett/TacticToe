@@ -18,19 +18,22 @@
     <div class="bg">
         <div class="game hidden">
             <div class="scoreboard">
+                <div class="back-to-menu scoreboard-button"></div>
                 <div class="pl-svg pl0">
                 </div>
                 <div class="pl-svg pl1">
                 </div>
                 <div class="name pl0"></div>
+                <div class="current-player text">Current player</div>
                 <div class="name pl1"></div>
                 <div class="score pl0"></div>
+                <div class="current-player-arrow"></div>
                 <div class="score pl1"></div>
             </div>
             <div class="message">
                 <div class="text"></div>
-                <div class="play-again">Play again</div>
-                <div class="back-to-menu">Back to menu</div>
+                <div class="cell light-bg-button play-again">Play again</div>
+                <div class="cell light-bg-button back-to-menu">Back to menu</div>
             </div>
             <div class="board">
                 <div class="x0y0 cell" x="0" y="0">
@@ -62,47 +65,47 @@
         </div>
         <div class="menu">
             <div class="title-pane">
-                <div class="title-header">Tactic Toe</div>
+                <div class="title-header text">Tactic Toe</div>
                 <div class="setup-section">
                     <div class="setup p0">
-                        <label for="name-p0">Player 1 name</label>
+                        <label for="name-p0" class="text">Player 1 name</label>
                         <input type="text" name="name-p0" id="name-p0">
                         <div class="player-type p0">
-                            <div class="x0y0 cell" cpuLvl="-1">
+                            <div class="x0y0 light-bg-button cell" cpuLvl="-1">
                                 Human
                             </div>
-                            <div class="x1y0 cell" cpuLvl="0">
+                            <div class="x1y0 light-bg-button cell" cpuLvl="0">
                                 CPU<br>(easy)
                             </div>
-                            <div class="x2y0 cell" cpuLvl="1">
-                                CPU<br>(medium)
+                            <div class="x2y0 light-bg-button cell" cpuLvl="1">
+                                CPU<br>(med.)
                             </div>
-                            <div class="x3y0 cell" cpuLvl="2">
+                            <div class="x3y0 light-bg-button cell" cpuLvl="2">
                                 CPU<br>(hard)
                             </div>
                         </div>
                     </div>
                     <div class="setup p1">
-                        <label for="name-p1">Player 2 name</label>
+                        <label for="name-p1" class="text">Player 2 name</label>
                         <input type="text" name="name-p1" id="name-p1">
                         <div class="player-type p1">
-                            <div class="x0y0 cell" cpuLvl="-1">
+                            <div class="x0y0 light-bg-button cell" cpuLvl="-1">
                                 Human
                             </div>
-                            <div class="x1y0 cell" cpuLvl="0">
+                            <div class="x1y0 light-bg-button cell" cpuLvl="0">
                                 CPU<br>(easy)
                             </div>
-                            <div class="x2y0 cell" cpuLvl="1">
-                                CPU<br>(medium)
+                            <div class="x2y0 light-bg-button cell" cpuLvl="1">
+                                CPU<br>(med.)
                             </div>
-                            <div class="x3y0 cell" cpuLvl="2">
+                            <div class="x3y0 light-bg-button cell" cpuLvl="2">
                                 CPU<br>(hard)
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="title-footer">
-                    <div class="x3y0 cell start">
+                    <div class="x3y0 cell light-bg-button start">
                         Start >
                     </div>
                 </div>
