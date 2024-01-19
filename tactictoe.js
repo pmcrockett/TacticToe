@@ -19,8 +19,10 @@ Board object
 */
 
 const board = (function() {
+    const menu = document.querySelector(`.menu`);
+    const game = document.querySelector(`.game`);
     let player = [ null, null ];
-    let playerTurn = null;
+    let playerTurn = 0;
     //let turnIdx = -1;
     let turnIdx = 0;
     let possibleMoves = null;
@@ -28,6 +30,7 @@ const board = (function() {
     let messageDiv = document.querySelector(".message");
     let messageText = messageDiv.querySelector(".text");
     let playAgainButton = messageDiv.querySelector(".play-again");
+    let backToMenuButton = messageDiv.querySelector(".back-to-menu");
 
     const boardDiv = document.querySelector(".board");
 
@@ -44,8 +47,9 @@ const board = (function() {
     //     player[1].svg
     // ];
 
-    const cell = document.querySelectorAll(".board.cell");
+    const cell = boardDiv.querySelectorAll(".cell");
     cell.forEach(e => {
+        console.log("cell clicked");
         e.addEventListener("click", f => {
             if (player[playerTurn].cpuLvl < 0) {
                 placeMarker(playerTurn, Number(e.getAttribute("x")), 
@@ -73,7 +77,14 @@ const board = (function() {
         [ [ 0, 0 ], [ 1, 1 ], [ 2, 2 ]],
         [ [ 0, 2 ], [ 1, 1 ], [ 2, 0 ]]
     ]
-    const init = function() {
+    const init = function(_e, _resetScores) {
+        console.log("INIT: RESETSCORES IS " + _resetScores);
+        if (_resetScores) {
+            player[0].score = 0;
+            player[1].score = 0;
+            updateScores();
+            playerTurn = getFirstPlayer();
+        }
         gameOver = false;
         turnIdx = 0;
         cell.forEach(e => {
@@ -110,6 +121,10 @@ const board = (function() {
             player[i].iconDiv = document.querySelector(`.pl-svg.pl${i}`);
             // let bgSvg = player[i].svg.cloneNode(true);
             // player[i].iconDiv.appendChild(bgSvg);
+            let existingSvg = player[i].iconDiv.querySelector("svg");
+            if (existingSvg) {
+                existingSvg.remove();
+            }
             let bgSvg = symbol.getSymbolSvg(player[i].symbolIdx);
             player[i].iconDiv.appendChild(bgSvg.svg);
         }
@@ -219,6 +234,7 @@ const board = (function() {
     }
     const getFirstPlayer = function() {
         playerTurn = Math.floor(Math.random() * 2);
+        console.log("GETTING FIRST PLAYER: RETURNING " + playerTurn)
         return playerTurn;
     }
     const getOtherPlayerIdx = function(_playerIdx) {
@@ -229,12 +245,13 @@ const board = (function() {
         if (endGame(_winLine)) {
 
         } else {
+            console.log("WAS TURN " + playerTurn);
             turnIdx++;
             playerTurn = getOtherPlayerIdx(playerTurn);
+            console.log("TURN IS NOW " + playerTurn);
             let curPlayer = player[playerTurn];
             possibleMoves = calcPossibleMoves(curPlayer.cpuLvl);
         }
-        //console.log("Leaving startNextTurn()");
         logGrid();
     }
     const placeMarker = function(_playerIdx, _x, _y) {
@@ -263,7 +280,7 @@ const board = (function() {
             if (_winInfo.length) {
                 player[playerTurn].score++;
                 updateScores();
-                console.log(`Player ${playerTurn} wins!`)
+                console.log(`Player ${playerTurn + 1} wins!`)
                 highlightWinLine(_winInfo);
                 messageText.textContent = `${player[playerTurn].name} wins!`;
             } else {
@@ -289,9 +306,12 @@ const board = (function() {
         });
     }
 
-    //playerTurn = getFirstPlayer();
-    playerTurn = 1;
     playAgainButton.addEventListener("click", init);
+    backToMenuButton.addEventListener("click", e => {
+        //init();
+        game.classList.add("hidden");
+        menu.classList.remove("hidden");
+    });
 
     return {
         checkMove,
@@ -513,11 +533,18 @@ const symbol = (function() {
     };
 })();
 
-const createIconPane = function() {
+const p0 = createPlayer("Player 1", 0, "#ff000011", -1);
+const p1 = createPlayer("Player 2", 1, "#0000ff11", 0);
+
+const createIconPane = function(_p0, _p1) {
     let pane = [];
     let cancelSvg = [
         symbol.getCancelSvg(),
         symbol.getCancelSvg()
+    ]
+    let player = [
+        _p0,
+        _p1
     ]
     for (let i = 0; i < 2; i++) {
         pane.push(document.querySelectorAll(`.icon-select.p${i} > .cell`));
@@ -532,23 +559,81 @@ const createIconPane = function() {
                         g.classList.remove("other-selected");
                     });
                     e.classList.add("selected");
+                    player[i].symbolIdx = j;
                     pane[1 - i][j].classList.add("other-selected");
                     pane[1 - i][j].appendChild(cancelSvg[1 - i].svg);
-                } else {
                 }
             });
             e.appendChild(symbol.getSymbolSvg(j).svg);
         });
     }
     
+    for (let i = 0; i < 2; i++) {
+        pane[i].forEach(function(e, j) {
+            console.log(player[i].symbolIdx);
+            if (j == player[i].symbolIdx) {
+                pane[1 - i][j].classList.add("other-selected");
+                pane[1 - i][j].appendChild(cancelSvg[1 - i].svg);
+                e.classList.add("selected");
+            }
+        });
+    }
 
     return {
         pane
     }
 }
 
-const human = createPlayer("Jane", 14, "#ff000011", -1);
-const cpu = createPlayer("Iama=ompute", 15, "#0000ff11", 0);
-let icons = createIconPane(0);
-board.setPlayers(human, cpu);
-board.init();
+const menu = (function(_p0, _p1) {
+    let icons = createIconPane(_p0, _p1);
+    const menu = document.querySelector(`.menu`);
+    const game = document.querySelector(`.game`);
+    let setupDiv = [];
+    let nameInput = [];
+    let playerTypeDiv = [];
+    let playerTypeCell = [];
+    let startCell = document.querySelector(`.start`);
+    let player = [
+        _p0,
+        _p1
+    ]
+
+
+    for (let i = 0; i < 2; i++) {
+        setupDiv.push(document.querySelector(`.setup.p${i}`));
+        nameInput.push(document.getElementById(`name-p${i}`));
+        playerTypeDiv.push(document.querySelector(`.player-type.p${i}`));
+        playerTypeCell.push(document.querySelectorAll(`.player-type.p${i} > .cell`));
+
+        playerTypeCell[i].forEach(function(c, j) {
+            if (c.getAttribute("cpuLvl") == player[i].cpuLvl) {
+                c.classList.add("selected");
+            }
+
+            c.addEventListener("click", e => {
+                playerTypeCell[i].forEach(f => {
+                    f.classList.remove("selected");
+                });
+                c.classList.add("selected");
+                player[i].cpuLvl = c.getAttribute("cpuLvl");
+            });
+        });
+        nameInput[i].value = player[i].name;
+        nameInput[i].addEventListener("input", e => {
+            // console.log(nameInput[i].value.slice(0, 12));
+            //nameInput[i].value = nameInput[i].value.slice(0, 12);
+            if (nameInput[i].value.length > 12) {
+                //nameInput[i].value = nameInput[i].value.slice(0, 12);
+                nameInput[i].value = player[i].name
+            } else {
+                player[i].name = nameInput[i].value;
+            }
+        });
+    }
+    startCell.addEventListener("click", e => {
+        menu.classList.add("hidden");
+        game.classList.remove("hidden");
+        board.setPlayers(player[0], player[1]);
+        board.init(null, true);
+    });
+})(p0, p1);

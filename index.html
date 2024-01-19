@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <template id="symbol-svg">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
         <title></title>
@@ -5,7 +6,6 @@
     </svg>
 </template>
 
-<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -62,7 +62,50 @@
         </div>
         <div class="menu">
             <div class="title-pane">
-                <input type="text">
+                <div class="title-header">Tactic Toe</div>
+                <div class="setup-section">
+                    <div class="setup p0">
+                        <label for="name-p0">Player 1 name</label>
+                        <input type="text" name="name-p0" id="name-p0">
+                        <div class="player-type p0">
+                            <div class="x0y0 cell" cpuLvl="-1">
+                                Human
+                            </div>
+                            <div class="x1y0 cell" cpuLvl="0">
+                                CPU<br>(easy)
+                            </div>
+                            <div class="x2y0 cell" cpuLvl="1">
+                                CPU<br>(medium)
+                            </div>
+                            <div class="x3y0 cell" cpuLvl="2">
+                                CPU<br>(hard)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setup p1">
+                        <label for="name-p1">Player 2 name</label>
+                        <input type="text" name="name-p1" id="name-p1">
+                        <div class="player-type p1">
+                            <div class="x0y0 cell" cpuLvl="-1">
+                                Human
+                            </div>
+                            <div class="x1y0 cell" cpuLvl="0">
+                                CPU<br>(easy)
+                            </div>
+                            <div class="x2y0 cell" cpuLvl="1">
+                                CPU<br>(medium)
+                            </div>
+                            <div class="x3y0 cell" cpuLvl="2">
+                                CPU<br>(hard)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="title-footer">
+                    <div class="x3y0 cell start">
+                        Start >
+                    </div>
+                </div>
             </div>
             <div class="icon-pane">
                 <div class="icon-select p0">
