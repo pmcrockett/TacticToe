@@ -220,19 +220,13 @@ const board = (function() {
         if (_resetScores) {
             player[0].score = 0;
             player[1].score = 0;
-            updateScores();
             playerTurn = getFirstPlayer();
         }
+        updateScores();
         gameOver = false;
         turnIdx = 0;
-        cell.forEach(e => {
-            e.classList.remove("win");
-            e.classList.add("selectable");
-            let svg = e.querySelector("svg");
-            if (svg) {
-                svg.remove();
-            }
-        });
+        removeCellSymbols();
+        messageDiv.classList.remove("unhidden");
         messageDiv.classList.add("hidden");
         boardDiv.classList.remove("game-over");
         space =[
@@ -384,11 +378,9 @@ const board = (function() {
         gameOver = endGame(_winLine);
 
         if (!gameOver) {
-            console.log("WAS TURN " + playerTurn);
             turnIdx++;
             playerTurn = getOtherPlayerIdx(playerTurn);
             updateCurPlayerArrow();
-            console.log("TURN IS NOW " + playerTurn);
             let curPlayer = player[playerTurn];
             possibleMoves = calcPossibleMoves(curPlayer.cpuLvl);
 
@@ -407,7 +399,14 @@ const board = (function() {
             space[_x][_y] = _playerIdx;
             let moveCell = document.querySelector(`.x${_x}y${_y}`);
             // moveCell.appendChild(player[playerTurn].svg.cloneNode(true));
-            moveCell.appendChild(symbol.getSymbolSvg(player[playerTurn].symbolIdx).svg);
+            let symbolSvg = symbol.getSymbolSvg(player[playerTurn].symbolIdx).svg;
+            moveCell.appendChild(symbolSvg);
+            symbolSvg.classList.add("symbol-placed");
+            symbolSvg.addEventListener("animationend", e => {
+                if (symbolSvg.classList.contains("symbol-removed")) {
+                    symbolSvg.remove();
+                }
+            });
             moveCell.classList.remove("selectable");
             startNextTurn(possibleMoves[_x][_y].winLine);
         } else {
@@ -416,24 +415,27 @@ const board = (function() {
         }
     }
     const endGame = function(_winInfo) {
-        //console.log(_winInfo);
         if (_winInfo.length || (turnIdx >= 9)) {
             boardDiv.classList.add("game-over");
-            messageDiv.classList.remove("hidden");
-            console.log("Game is over");
-            if (_winInfo.length) {
-                player[playerTurn].score++;
-                updateScores();
-                console.log(`Player ${playerTurn + 1} wins!`)
-                highlightWinLine(_winInfo);
-                messageText.textContent = `${player[playerTurn].name} wins!`;
-            } else {
-                console.log("Stalemate");
-                messageText.textContent = "Stalemate!"
-            }
+            window.setTimeout(showGameOver, 500, _winInfo);
             return true;
         }
         return false;
+    }
+    const showGameOver = function(_winInfo) {
+        messageDiv.classList.remove("hidden");
+        messageDiv.classList.add("unhidden");
+        console.log("Game is over");
+        if (_winInfo.length) {
+            player[playerTurn].score++;
+            //updateScores();
+            console.log(`Player ${playerTurn + 1} wins!`)
+            highlightWinLine(_winInfo);
+            messageText.textContent = `${player[playerTurn].name} wins!`;
+        } else {
+            console.log("Stalemate");
+            messageText.textContent = "Stalemate!"
+        }
     }
     const logGrid = function() {
         console.log(`Player turn: ${playerTurn}   Turn number ${turnIdx}`);
@@ -443,6 +445,7 @@ const board = (function() {
     }
     const highlightWinLine = function(_winLine) {
         _winLine.forEach(e => {
+            console.log(_winLine, e, line[e]);
             line[e].forEach(f => {
                 let winCell = boardDiv.querySelector(`.x${f[0]}y${f[1]}`);
                 winCell.classList.add("win");
@@ -465,16 +468,31 @@ const board = (function() {
     backToMenuButton.forEach(b => {
         b.addEventListener("click", e => {
             //init();
-            console.log("back");
-            game.classList.add("hidden");
-            menu.classList.remove("hidden");
+            removeCellSymbols();
+            window.setTimeout(function() {
+                console.log("back");
+                game.classList.remove("unhidden");
+                game.classList.add("hidden");
+                menu.classList.remove("hidden");
+                menu.classList.add("unhidden");
+            }, 250);
         });
         if (b.classList.contains("scoreboard-button")) {
             let svg = symbol.getBackSvg();
             b.appendChild(svg.svg);
         }
     });
-
+    const removeCellSymbols = function() {
+        cell.forEach(e => {
+            e.classList.remove("win");
+            e.classList.add("selectable");
+            let svg = e.querySelector("svg");
+            if (svg) {
+                //svg.remove();
+                svg.classList.add("symbol-removed");
+            }
+        });
+    }
 
     return {
         checkMove,
@@ -681,8 +699,10 @@ const menu = (function(_p0, _p1) {
         });
     }
     startCell.addEventListener("click", e => {
+        menu.classList.remove("unhidden");
         menu.classList.add("hidden");
         game.classList.remove("hidden");
+        game.classList.add("unhidden");
         board.setPlayers(player[0], player[1]);
         board.init(null, true);
     });

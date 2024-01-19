@@ -3,6 +3,67 @@
     src: url(./resources/Lemon-Regular.ttf);
   }
 
+@keyframes pane-enter {
+    0% {
+        opacity: 0;
+        display: none;
+    }
+    100% {
+        opacity: 1;
+        display: grid;
+    }
+}
+
+@keyframes pane-exit {
+    0% {
+        opacity: 1;
+        display: grid;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+@keyframes symbol-enter {
+    0% {
+        opacity: 0;
+        display: none;
+        width: 0%;
+        position: relative;
+        left: 50%;
+        top: 50%;
+    }
+    100% {
+        opacity: 1;
+        display: block;
+        width: 100%;
+        position: relative;
+        left: 0;
+        top: 0;
+    }
+}
+
+@keyframes symbol-exit {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes symbol-win {
+    0% {
+        opacity: 1;
+        fill: var(--active-col);
+    }
+    100% {
+        opacity: 0;
+        fill: var(--dark-col);
+    }
+}
+
 * {
     margin: 0px;
     font-family: Lemon-Regular, Arial, Helvetica, sans-serif;
@@ -150,7 +211,11 @@
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
-.game:not(.hidden), .menu:not(.hidden) {
+.game, .menu {
+    grid-area: 1 / 1 / 2 / 2;
+}
+
+.game, .menu {
     display: grid;
     justify-content: center;
     align-content: center;
@@ -161,10 +226,6 @@
     box-shadow: -16px -16px 20px var(--dark-col), 16px -16px 20px var(--dark-col),
         0px 8px 20px var(--dark-col), 
         20px 2px 96px var(--light-col-fade), -20px -20px 96px var(--light-col-fade);
-}
-
-.game.hidden, .menu.hidden {
-    display: none;
 }
 
 .board {
@@ -185,11 +246,7 @@
         0px -10px 48px var(--light-col-fade);
 }
 
-.message.hidden {
-    display: none;
-}
-
-.message:not(hidden) {
+.message {
     color: var(--dark-col);
     font-size: var(--message-choice-font-size);
     grid-area: 1 / 1 / 2 / 2;
@@ -308,6 +365,7 @@
     grid-area: 1 / 2 / 2 / 3;
     align-self: center;
     justify-self: center;
+    font-size: var(--message-choice-font-size);
 }
 
 .current-player-arrow {
@@ -432,4 +490,26 @@ svg {
     fill: var(--active-col);
     background-color: #00000000;
     filter: drop-shadow(2px 2px 2px var(--active-col));
+    animation: 0.5s infinite alternate ease-in-out symbol-win;
+}
+
+/* .board > .cell > .svg {
+
+} */
+
+.unhidden {
+    animation: 0.25s pane-enter;
+}
+
+.hidden {
+    animation: 0.25s pane-exit;
+    display: none;
+}
+
+.symbol-placed {
+    animation: 0.25s symbol-enter;
+}
+
+.symbol-removed {
+    animation: 0.25s symbol-exit;
 }
