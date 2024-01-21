@@ -587,7 +587,7 @@ const board = (function() {
     const getOtherPlayerIdx = function(_playerIdx) {
         return (_playerIdx + 1) % 2;
     };
-    
+
     const startNextTurn = function(_winLine) {
         setHtml.endCpuTurn();
         gameOver = endGame(_winLine);
@@ -619,9 +619,13 @@ const board = (function() {
     const endGame = function(_winInfo) {
         if (_winInfo.length || (turnIdx >= 9)) {
             setHtml.startGameOver(_winInfo, line, getCurrentPlayer());
-            window.setTimeout(function() {
-                getCurrentPlayer().score++;
-            }, 500);
+
+            // If not a stalemate
+            if (_winInfo.length) {
+                window.setTimeout(function() {
+                    getCurrentPlayer().score++;
+                }, 500);
+            }
 
             return true;
         }
