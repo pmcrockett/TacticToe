@@ -366,6 +366,7 @@
     align-self: center;
     justify-self: center;
     font-size: var(--message-choice-font-size);
+    text-align: center;
 }
 
 .current-player-arrow {

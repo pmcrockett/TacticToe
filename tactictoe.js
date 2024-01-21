@@ -1,23 +1,4 @@
-/*
-Player object
-    track running score
-    report to display object when starting turn
-    store player color/symbol/name
-    AI module -- auto moves based on move desirability
-
-Board object
-    track board state
-    report valid available moves
-    rank valid moves by desirability? (or do this in the AI?)
-        desirability based on:
-            (if first turn) is it in the center space? (999)
-            does it advance a line? (0, 1, 999 points)
-            does it block the other player's line? (0, 1, 500)
-    track player turns
-    report game end (win/tie)
-    accept input and reject invalid moves
-*/
-
+// Returns svg icon data.
 const symbol = (function() {
     const template = document.querySelector("#symbol-svg");
     
@@ -64,7 +45,8 @@ const symbol = (function() {
         "M21.33 17.39C22.73 18.66 21.8 21 19.92 21H11.06C8.25 21 6 18.75 6 15.94V15.89C3.7 15.42 2 13.41 2 11C2 8.25 4.22 6 7 6H9.5C9.8 6 10 5.77 10 5.5S9.8 5 9.5 5H7V3H9.5C10.88 3 12 4.13 12 5.5C12 6.89 10.88 8 9.5 8H7C5.34 8 4 9.33 4 11C4 12.37 4.92 13.5 6.14 13.87C6.7 11.67 8.67 10 11.06 10C11.86 10 12.66 10.22 13.36 10.55C11.95 11.34 11 12.8 11 14.5C11 15.75 11.5 16.87 12.33 17.67L13.03 16.97C12.38 16.36 12 15.47 12 14.5C12 11.91 14.34 11 15.5 11C17.58 11 19.45 12.89 18.94 15.23L21.33 17.39M18 19C18.56 19 19 18.56 19 18S18.56 17 18 17 17 17.44 17 18 17.44 19 18 19Z",
         // Stormcloud
         "M6,16A5,5 0 0,1 1,11A5,5 0 0,1 6,6C7,3.65 9.3,2 12,2C15.43,2 18.24,4.66 18.5,8.03L19,8A4,4 0 0,1 23,12A4,4 0 0,1 19,16H18A1,1 0 0,1 17,15A1,1 0 0,1 18,14H19A2,2 0 0,0 21,12A2,2 0 0,0 19,10H17V9A5,5 0 0,0 12,4C9.5,4 7.45,5.82 7.06,8.19C6.73,8.07 6.37,8 6,8A3,3 0 0,0 3,11A3,3 0 0,0 6,14H7A1,1 0 0,1 8,15A1,1 0 0,1 7,16H6M12,11H15L13,15H15L11.25,22L12,17H9.5L12,11Z"
-    ]
+    ];
+
     const name = [
         "X",
         "O",
@@ -87,16 +69,20 @@ const symbol = (function() {
         "Rabbit",
         "Mouse",
         "Stormcloud"
-    ]
+    ];
+
     const getSymbolStr = function(_idx) {
         return str[_idx];
-    }
+    };
+
     const getSymbolName = function(_idx) {
         return name[_idx];
-    }
+    };
+
     const getSymbolCount = function() {
         return str.length;
-    }
+    };
+
     const getSymbolSvg = function(_idx, _title) {
         const svg = template.content.cloneNode(true).querySelector("svg");
         let svgPath = svg.querySelector("path");
@@ -111,36 +97,45 @@ const symbol = (function() {
         svgPath.setAttribute("d", str);
         let svgTitle = svg.querySelector("title");
         svgTitle.textContent = _title;
+
         return {
             svg,
             svgPath,
             svgTitle
         }
-    }
+    };
+
     const getCancelSvg = function() {
         let svg = getSymbolSvg("M12 2C17.5 2 22 6.5 22 12S17.5 22 12 22 2 17.5 2 12 6.5 2 12 2M12 4C10.1 4 8.4 4.6 7.1 5.7L18.3 16.9C19.3 15.5 20 13.8 20 12C20 7.6 16.4 4 12 4M16.9 18.3L5.7 7.1C4.6 8.4 4 10.1 4 12C4 16.4 7.6 20 12 20C13.9 20 15.6 19.4 16.9 18.3Z", 
             "Unvailable");
         svg.svg.classList.add("cancel");
+
         return svg;
-    }
+    };
+
     const getBackSvg = function() {
         return getSymbolSvg("M2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12M18,11H10L13.5,7.5L12.08,6.08L6.16,12L12.08,17.92L13.5,16.5L10,13H18V11Z", 
             "Back to menu");
-    }
+    };
+
     const getLeftArrowSvg = function() {
         return getSymbolSvg(getLeftArrowStr(), 
             "Back to menu");
-    }
+    };
+
     const getRightArrowSvg = function() {
         return getSymbolSvg(getRightArrowStr, 
             "Back to menu");
-    }
+    };
+
     const getLeftArrowStr = function() {
         return "M21 10.5C21 14.64 17.64 18 13.5 18H11V22L4 16L11 10V14H13.5C15.43 14 17 12.43 17 10.5V3H21V10.5Z";
-    }
+    };
+
     const getRightArrowStr = function() {
         return "M3 3H7V10.5C7 12.43 8.57 14 10.5 14H13V10L20 16L13 22V18H10.5C6.36 18 3 14.64 3 10.5V3Z";
-    }
+    };
+
     return {
         getSymbolStr,
         getSymbolName,
@@ -155,15 +150,269 @@ const symbol = (function() {
     };
 })();
 
-const board = (function() {
+// Handles all program DOM modifications.
+const setHtml = (function() {
+    const initBoardButtons = function(_board) {
+        cell.forEach(e => {
+            e.addEventListener("click", f => {clickBoardCell(e, _board)}, false);
+        });
+
+        playAgainButton.addEventListener("click", _board.init);
+
+        backToMenuButton.forEach(b => {
+            b.addEventListener("click", clickBoardBack);
+            
+            if (b.classList.contains("scoreboard-button")) {
+                let svg = symbol.getBackSvg();
+                b.appendChild(svg.svg);
+            }
+        });
+    };
+
+    const initBoard = function() {
+        messageDiv.classList.remove("unhidden");
+        messageDiv.classList.add("hidden");
+        boardDiv.classList.remove("game-over");
+    };
+
+    const clickBoardCell = function(_cell, _board) {
+        if (_board.getCurrentPlayer().cpuLvl < 0) {
+            _board.placeMarker(_board.getPlayerTurn(), Number(_cell.getAttribute("x")), 
+                Number(_cell.getAttribute("y")));
+        }
+    };
+
+    const clickBoardBack = function() {
+        removeBoardCellSymbols();
+        window.setTimeout(function() {
+            game.classList.remove("unhidden");
+            game.classList.add("hidden");
+            menu.classList.remove("hidden");
+            menu.classList.add("unhidden");
+        }, 250);
+    };
+
+    const removeBoardCellSymbols = function() {
+        cell.forEach(e => {
+            e.classList.remove("win");
+            e.classList.add("selectable");
+            let svg = e.querySelector("svg");
+
+            if (svg) {
+                svg.classList.add("symbol-removed");
+            }
+        });
+    };
+
+    const updatePlayer = function(_player, _plIdx) {
+        _player.nameDiv = document.querySelector(`.name.pl${_plIdx}`);
+        _player.nameDiv.textContent = _player.name;
+
+        _player.scoreDiv = document.querySelector(`.score.pl${_plIdx}`);
+        _player.iconDiv = document.querySelector(`.pl-svg.pl${_plIdx}`);
+
+        let existingSvg = _player.iconDiv.querySelector("svg");
+
+        if (existingSvg) {
+            existingSvg.remove();
+        }
+
+        let bgSvg = symbol.getSymbolSvg(_player.symbolIdx);
+        _player.iconDiv.appendChild(bgSvg.svg);
+    };
+
+    const updateScores = function(_players) {
+        for (let i = 0; i < _players.length; i++) {
+            _players[i].scoreDiv.textContent = _players[i].score;
+        }
+    };
+
+    const startCpuTurn = function() {
+        boardDiv.classList.add("cpu-turn");
+    };
+
+    const endCpuTurn = function() {
+        boardDiv.classList.remove("cpu-turn");
+    };
+
+    const updatePlayerTurnArrow = function(_playerTurn, _player) {
+        curPlayerDiv.textContent = "";
+        let turnText = document.createTextNode(`${_player.name}'s`);
+        curPlayerDiv.appendChild(turnText);
+        curPlayerDiv.appendChild(document.createElement("br"));
+        turnText = document.createTextNode(`turn`);
+        curPlayerDiv.appendChild(turnText);
+
+        if (_playerTurn) {
+            var path = symbol.getRightArrowStr();
+            arrowSvg.svg.classList.add("right"); 
+        } else {
+            var path = symbol.getLeftArrowStr();
+            arrowSvg.svg.classList.remove("right");  
+        }
+
+        arrowSvg.svgPath.setAttribute("d", path);
+    };
+
+    const placePlayerBoardMarker = function(_x, _y, _player) {
+        let moveCell = document.querySelector(`.x${_x}y${_y}`);
+        let symbolSvg = symbol.getSymbolSvg(_player.symbolIdx).svg;
+        moveCell.appendChild(symbolSvg);
+        symbolSvg.classList.add("symbol-placed");
+
+        symbolSvg.addEventListener("animationend", e => {
+            if (symbolSvg.classList.contains("symbol-removed")) {
+                symbolSvg.remove();
+            }
+        });
+
+        moveCell.classList.remove("selectable");
+    };
+
+    const startGameOver = function(_winInfo, _lines, _player) {
+        boardDiv.classList.add("game-over");
+        window.setTimeout(showGameOver, 500, _winInfo, _lines, _player);
+    };
+
+    const showGameOver = function(_winInfo, _lines, _player) {
+        messageDiv.classList.remove("hidden");
+        messageDiv.classList.add("unhidden");
+
+        if (_winInfo.length) {
+            highlightWinLine(_winInfo, _lines);
+            messageText.textContent = `${_player.name} wins!`;
+        } else {
+            messageText.textContent = "Stalemate!"
+        }
+    };
+
+    const highlightWinLine = function(_winLine, _lines) {
+        _winLine.forEach(e => {
+            _lines[e].forEach(f => {
+                let winCell = boardDiv.querySelector(`.x${f[0]}y${f[1]}`);
+                winCell.classList.add("win");
+            });
+        });
+    };
+
+    const createMenuIconPane = function(_p0, _p1) {
+        let pane = [];
+        let cancelSvg = [
+            symbol.getCancelSvg(),
+            symbol.getCancelSvg()
+        ];
+        let player = [
+            _p0,
+            _p1
+        ];
+
+        for (let i = 0; i < 2; i++) {
+            pane.push(document.querySelectorAll(`.icon-select.p${i} > .cell`));
+    
+            pane[i].forEach(function(e, j) {
+                e.addEventListener("click", f => {clickPlayerIcon(pane, i, j, player[i],
+                    cancelSvg)});
+                e.appendChild(symbol.getSymbolSvg(j).svg);
+            });
+        }
+        
+        for (let i = 0; i < 2; i++) {
+            pane[i].forEach(function(e, j) {
+                if (j == player[i].symbolIdx) {
+                    pane[1 - i][j].classList.add("other-selected");
+                    pane[1 - i][j].appendChild(cancelSvg[1 - i].svg);
+                    e.classList.add("selected");
+                }
+            });
+        }
+    
+        return pane;
+    };
+
+    const clickPlayerIcon = function(_panes, _paneIdx, _iconIdx, _player,
+            _cancelSvg) {
+        if (!_panes[1 - _paneIdx][_iconIdx].classList.contains("selected")) {
+            _panes[_paneIdx].forEach(g => {
+                g.classList.remove("selected");
+            });
+
+            _panes[1 - _paneIdx].forEach(g => {
+                g.classList.remove("other-selected");
+            });
+
+            _panes[_paneIdx][_iconIdx].classList.add("selected");
+            _player.symbolIdx = _iconIdx;
+            _panes[1 - _paneIdx][_iconIdx].classList.add("other-selected");
+            _panes[1 - _paneIdx][_iconIdx].appendChild(_cancelSvg[1 - _paneIdx].svg);
+        }
+    };
+
+    const createMenu = function(_p0, _p1) {
+        createMenuIconPane(_p0, _p1);
+        let player = [
+            _p0,
+            _p1
+        ];
+    
+        for (let i = 0; i < 2; i++) {
+            setupDiv.push(document.querySelector(`.setup.p${i}`));
+            nameInput.push(document.getElementById(`name-p${i}`));
+            playerTypeDiv.push(document.querySelector(`.player-type.p${i}`));
+            playerTypeCell.push(document.querySelectorAll(`.player-type.p${i} > .cell`));
+    
+            playerTypeCell[i].forEach(function(c, j) {
+                if (c.getAttribute("cpuLvl") == player[i].cpuLvl) {
+                    c.classList.add("selected");
+                }
+    
+                c.addEventListener("click", e => {
+                    clickMenuPlayerType(playerTypeCell[i], j, player[i])
+                });
+            });
+
+            nameInput[i].value = player[i].name;
+            nameInput[i].addEventListener("input", e => {limitNameLength(nameInput[i], player[i])});
+        }
+
+        startCell.addEventListener("click", e => {clickMenuStart(player[0], player[1])});
+    };
+
+    const clickMenuPlayerType = function(_cells, _cellIdx, _player) {
+        _cells.forEach(f => {
+            f.classList.remove("selected");
+        });
+
+        _cells[_cellIdx].classList.add("selected");
+        _player.cpuLvl = _cells[_cellIdx].getAttribute("cpuLvl");
+    };
+
+    const clickMenuStart = function(_p0, _p1) {
+        menu.classList.remove("unhidden");
+        menu.classList.add("hidden");
+        game.classList.remove("hidden");
+        game.classList.add("unhidden");
+        board.setPlayers(_p0, _p1);
+        board.init(null, true);
+    };
+
+    const limitNameLength = function(_nameInput, _player) {
+        if (_nameInput.value.length > 12) {
+            _nameInput.value = _player.name
+        } else {
+            _player.name = _nameInput.value;
+        }
+    }
+
+    // Menu
     const menu = document.querySelector(`.menu`);
+    let setupDiv = [];
+    let nameInput = [];
+    let playerTypeDiv = [];
+    let playerTypeCell = [];
+    let startCell = document.querySelector(`.start`);
+
+    // Board
     const game = document.querySelector(`.game`);
-    let player = [ null, null ];
-    let playerTurn = 0;
-    //let turnIdx = -1;
-    let turnIdx = 0;
-    let possibleMoves = null;
-    let gameOver = false;
     let messageDiv = document.querySelector(".message");
     let messageText = messageDiv.querySelector(".text");
     let playAgainButton = messageDiv.querySelector(".play-again");
@@ -172,155 +421,120 @@ const board = (function() {
     let curPlayerArrowDiv = game.querySelector(".current-player-arrow");
     let arrowSvg = symbol.getLeftArrowSvg();
     curPlayerArrowDiv.appendChild(arrowSvg.svg);
-
     const boardDiv = document.querySelector(".board");
-
-    // const pl1Template = document.querySelector("#x-svg");
-    // const pl2Template = document.querySelector("#o-svg");
-    // const pl1Svg = pl1Template.content.cloneNode(true).querySelector("svg");
-    // const pl2Svg = pl2Template.content.cloneNode(true).querySelector("svg");
-    // pl1SvgPath = pl1Svg.querySelector("path");
-    // pl2SvgPath = pl2Svg.querySelector("path");
-    // pl1SvgPath.setAttribute("d", pla)
-
-    // const playerSymbol = [
-    //     player[0].svg,
-    //     player[1].svg
-    // ];
-
     const cell = boardDiv.querySelectorAll(".cell");
-    cell.forEach(e => {
-        console.log("cell clicked");
-        e.addEventListener("click", f => {
-            if (player[playerTurn].cpuLvl < 0) {
-                placeMarker(playerTurn, Number(e.getAttribute("x")), 
-                    Number(e.getAttribute("y")));
-            }
-        });
-    });
 
+    return {
+        initBoardButtons,
+        initBoard,
+        removeBoardCellSymbols,
+        updatePlayer,
+        updateScores,
+        startCpuTurn,
+        endCpuTurn,
+        updatePlayerTurnArrow,
+        placePlayerBoardMarker,
+        startGameOver,
+        createMenu
+    };
+})();
 
-    let space = null;
-    //     [ 0, 0, 2 ],
-    //     [ 2, 1, 0 ],
-    //     [ 1, 0, 1 ]
-    // ]
-    const line = [
-        [ [ 0, 0 ], [ 1, 0 ], [ 2, 0 ]],
-        [ [ 0, 1 ], [ 1, 1 ], [ 2, 1 ]],
-        [ [ 0, 2 ], [ 1, 2 ], [ 2, 2 ]],
-        [ [ 0, 0 ], [ 0, 1 ], [ 0, 2 ]],
-        [ [ 1, 0 ], [ 1, 1 ], [ 1, 2 ]],
-        [ [ 2, 0 ], [ 2, 1 ], [ 2, 2 ]],
-        [ [ 0, 0 ], [ 1, 1 ], [ 2, 2 ]],
-        [ [ 0, 2 ], [ 1, 1 ], [ 2, 0 ]]
-    ]
+// Runs gameboard logic and ranks move desirability for CPU players.
+const board = (function() {
     const init = function(_e, _resetScores) {
-        console.log("INIT: RESETSCORES IS " + _resetScores);
         if (_resetScores) {
             player[0].score = 0;
             player[1].score = 0;
             playerTurn = getFirstPlayer();
         }
-        updateScores();
+
+        setHtml.updateScores(player);
         gameOver = false;
         turnIdx = 0;
-        removeCellSymbols();
-        messageDiv.classList.remove("unhidden");
-        messageDiv.classList.add("hidden");
-        boardDiv.classList.remove("game-over");
-        space =[
+        setHtml.removeBoardCellSymbols();
+        setHtml.initBoard();
+        space = [
             [ -1, -1, -1 ],
             [ -1, -1, -1 ],
             [ -1, -1, -1 ]
         ];
         possibleMoves = null;
         startNextTurn([]);
-    }
+    };
+
     const setPlayers = function(_p0, _p1) {
         player[0] = _p0;
         player[1] = _p1;
 
-        //let scoreboardDiv = document.querySelector(`.scoreboard`);
         for (let i = 0; i < 2; i++) {
             player[i].board = this;
             player[i].playerIdx = i;
 
-            player[i].nameDiv = document.querySelector(`.name.pl${i}`);
-            player[i].nameDiv.textContent = player[i].name;
+            setHtml.updatePlayer(player[i], i);
+        }
+        setHtml.updateScores(player);
+    };
 
-            player[i].scoreDiv = document.querySelector(`.score.pl${i}`);
-            player[i].iconDiv = document.querySelector(`.pl-svg.pl${i}`);
-            // let bgSvg = player[i].svg.cloneNode(true);
-            // player[i].iconDiv.appendChild(bgSvg);
-            let existingSvg = player[i].iconDiv.querySelector("svg");
-            if (existingSvg) {
-                existingSvg.remove();
-            }
-            let bgSvg = symbol.getSymbolSvg(player[i].symbolIdx);
-            player[i].iconDiv.appendChild(bgSvg.svg);
-        }
-        updateScores();
-    }
-    const updateScores = function() {
-        for (let i = 0; i < 2; i++) {
-            player[i].scoreDiv.textContent = player[i].score;
-        }
-    }
     const calcPossibleMoves = function(_cpuLvl) {
         let scoreArr = [
-         [ 0, 0, 0 ],
-         [ 0, 0, 0 ],
-         [ 0, 0, 0 ]
+            [ 0, 0, 0 ],
+            [ 0, 0, 0 ],
+            [ 0, 0, 0 ]
         ]
+
         for (let x = 0; x < space.length; x++) {
             for (let y = 0; y < space[x].length; y++) {
                 scoreArr[x][y] = checkMove(x, y, _cpuLvl)
-                //console.log(x, y, scoreArr[x][y]);
             }
         }
+
         return scoreArr;
-    }
+    };
+
     const getPossibleMoves = function() {
         return possibleMoves;
-    }
+    };
+
     const checkMove = function(_xIdx, _yIdx, _cpuLvl) {
         const pos = [ _xIdx, _yIdx ];
         let winLine = [];
+
         if (space[_xIdx][_yIdx] < 0) {
             let score = 0;
-            //line.forEach( e => {
+
             for (let i = 0; i < line.length; i++) {
                 if (isSpaceInLine([ _xIdx, _yIdx ], line[i])) {
-                    // +1 for each line thesymbol.getLeftArrowSvg().svg space could be in (on cpuLvl 2).
+                    // +1 for each line the space could be in (on cpuLvl 2).
                     score += _cpuLvl < 2 ? 0 : 1;
-                    //console.log(playerTurn, 
-                    //    getOtherPlayerIdx(playerTurn), i, _cpuLvl);
                     const lineScore = getPlayerLineScore(playerTurn, 
-                            getOtherPlayerIdx(playerTurn), i, _cpuLvl);
+                        getOtherPlayerIdx(playerTurn), i, _cpuLvl);
                     score += lineScore.score;
-                    //console.log(lineScore);
                     // If the move would result in a win, .winLine gives the
                     // index of the completed line(s) in the line array.
+
                     if (lineScore.winLine >= 0 && 
                             !winLine.includes(lineScore.winLine)) {
                         winLine.push(lineScore.winLine);
                     }
                 }
             };
+
             return { pos, valid: true, score, winLine };
         }
 
         return { pos, valid: false, score: -1, winLine };
-    }
+    };
+
     const isSpaceInLine = function(_space, _line) {
         for (let i = 0; i < _line.length; i++) {
             if (_space[0] == _line[i][0] && _space[1] == _line[i][1]) {
                 return true;
             }
         }
+
         return false;
-    }
+    };
+
     const getPlayerLineScore = function(_playerIdx, _opponentIdx, _lineIdx, _cpuLvl) {
         const l = line[_lineIdx];
         // Higher CPU levels prioritize winning over blocking you and are better
@@ -337,16 +551,16 @@ const board = (function() {
         ];
         let plScoreIdx = 0;
         let opScoreIdx = 0;
+
         // Tally each player's number of marks on the line.
-        //console.log(`line len ${l.length}`);
         for (let i = 0; i < l.length; i++) {
             if (space[l[i][0]][l[i][1]] == _opponentIdx) {
                 opScoreIdx++;
-                //console.log(`opScoreIdx ${opScoreIdx}`);
             } else if (space[l[i][0]][l[i][1]] == _playerIdx) {
                 plScoreIdx++
             }
         }
+
         if (opScoreIdx == 1 && plScoreIdx == 1) {
             // Lower CPU levels are more eager to fill the last space in a line 
             // even with no clear benefit.
@@ -357,142 +571,97 @@ const board = (function() {
         } else {
             // At higher levels, CPU's line score is effectively weighted to
             // influence the decision more than the opponent's line score.
-            //console.log(_lineIdx, plScoreIdx, opScoreIdx);
             return {
                 score: opScoreVal[opScoreIdx] + plScoreVal[plScoreIdx],
                 winLine: plScoreIdx >= 2 ? _lineIdx : -1
             };
         }
-    }
+    };
+
     const getFirstPlayer = function() {
         playerTurn = Math.floor(Math.random() * 2);
-        console.log("GETTING FIRST PLAYER: RETURNING " + playerTurn)
+
         return playerTurn;
-    }
+    };
+
     const getOtherPlayerIdx = function(_playerIdx) {
         return (_playerIdx + 1) % 2;
-    }
+    };
+    
     const startNextTurn = function(_winLine) {
-        boardDiv.classList.remove("cpu-turn");
-        //console.log("Starting turn");
+        setHtml.endCpuTurn();
         gameOver = endGame(_winLine);
 
         if (!gameOver) {
             turnIdx++;
             playerTurn = getOtherPlayerIdx(playerTurn);
-            updateCurPlayerArrow();
-            let curPlayer = player[playerTurn];
+            setHtml.updatePlayerTurnArrow(playerTurn, getCurrentPlayer());
+            let curPlayer = getCurrentPlayer();
             possibleMoves = calcPossibleMoves(curPlayer.cpuLvl);
 
-            if (player[playerTurn].cpuLvl >= 0) {
-                boardDiv.classList.add("cpu-turn");
-                window.setTimeout(player[playerTurn].promptCpuMove.bind(player[playerTurn]), 700);
+            if (getCurrentPlayer().cpuLvl >= 0) {
+                setHtml.startCpuTurn();
+                window.setTimeout(getCurrentPlayer().promptCpuMove.bind(getCurrentPlayer()), 700);
             }
         }
-        logGrid();
-    }
+    };
+
     const placeMarker = function(_playerIdx, _x, _y) {
         if (!gameOver && 
                 possibleMoves[_x][_y].valid && 
-                _playerIdx == playerTurn
-            ) {
+                _playerIdx == playerTurn) {
             space[_x][_y] = _playerIdx;
-            let moveCell = document.querySelector(`.x${_x}y${_y}`);
-            // moveCell.appendChild(player[playerTurn].svg.cloneNode(true));
-            let symbolSvg = symbol.getSymbolSvg(player[playerTurn].symbolIdx).svg;
-            moveCell.appendChild(symbolSvg);
-            symbolSvg.classList.add("symbol-placed");
-            symbolSvg.addEventListener("animationend", e => {
-                if (symbolSvg.classList.contains("symbol-removed")) {
-                    symbolSvg.remove();
-                }
-            });
-            moveCell.classList.remove("selectable");
+            setHtml.placePlayerBoardMarker(_x, _y, getCurrentPlayer());
             startNextTurn(possibleMoves[_x][_y].winLine);
-        } else {
-            console.log("Invalid move");
-            logGrid();
         }
-    }
+    };
+
     const endGame = function(_winInfo) {
         if (_winInfo.length || (turnIdx >= 9)) {
-            boardDiv.classList.add("game-over");
-            window.setTimeout(showGameOver, 500, _winInfo);
+            setHtml.startGameOver(_winInfo, line, getCurrentPlayer());
+            window.setTimeout(function() {
+                getCurrentPlayer().score++;
+            }, 500);
+
             return true;
         }
+
         return false;
-    }
-    const showGameOver = function(_winInfo) {
-        messageDiv.classList.remove("hidden");
-        messageDiv.classList.add("unhidden");
-        console.log("Game is over");
-        if (_winInfo.length) {
-            player[playerTurn].score++;
-            //updateScores();
-            console.log(`Player ${playerTurn + 1} wins!`)
-            highlightWinLine(_winInfo);
-            messageText.textContent = `${player[playerTurn].name} wins!`;
-        } else {
-            console.log("Stalemate");
-            messageText.textContent = "Stalemate!"
-        }
-    }
+    };
+
     const logGrid = function() {
         console.log(`Player turn: ${playerTurn}   Turn number ${turnIdx}`);
+
         for (let y = 0; y < 3; y++) {
             console.log(`${space[0][y]} ${space[1][y]} ${space[2][y]}`);
         }
-    }
-    const highlightWinLine = function(_winLine) {
-        _winLine.forEach(e => {
-            console.log(_winLine, e, line[e]);
-            line[e].forEach(f => {
-                let winCell = boardDiv.querySelector(`.x${f[0]}y${f[1]}`);
-                winCell.classList.add("win");
-            });
-        });
-    }
-    const updateCurPlayerArrow = function() {
-        curPlayerDiv.textContent = `${player[playerTurn].name}'s turn`;
-        if (playerTurn) {
-            var path = symbol.getRightArrowStr();
-            arrowSvg.svg.classList.add("right"); 
-        } else {
-            var path = symbol.getLeftArrowStr();
-            arrowSvg.svg.classList.remove("right");  
-        }
-        arrowSvg.svgPath.setAttribute("d", path);
-    }
-    playAgainButton.addEventListener("click", init);
+    };
 
-    backToMenuButton.forEach(b => {
-        b.addEventListener("click", e => {
-            //init();
-            removeCellSymbols();
-            window.setTimeout(function() {
-                console.log("back");
-                game.classList.remove("unhidden");
-                game.classList.add("hidden");
-                menu.classList.remove("hidden");
-                menu.classList.add("unhidden");
-            }, 250);
-        });
-        if (b.classList.contains("scoreboard-button")) {
-            let svg = symbol.getBackSvg();
-            b.appendChild(svg.svg);
-        }
-    });
-    const removeCellSymbols = function() {
-        cell.forEach(e => {
-            e.classList.remove("win");
-            e.classList.add("selectable");
-            let svg = e.querySelector("svg");
-            if (svg) {
-                //svg.remove();
-                svg.classList.add("symbol-removed");
-            }
-        });
-    }
+    const getPlayerTurn = function() {
+        return playerTurn;
+    };
+
+    const getCurrentPlayer = function() {
+        return player[playerTurn];
+    };
+
+    const line = [
+        [ [ 0, 0 ], [ 1, 0 ], [ 2, 0 ]],
+        [ [ 0, 1 ], [ 1, 1 ], [ 2, 1 ]],
+        [ [ 0, 2 ], [ 1, 2 ], [ 2, 2 ]],
+        [ [ 0, 0 ], [ 0, 1 ], [ 0, 2 ]],
+        [ [ 1, 0 ], [ 1, 1 ], [ 1, 2 ]],
+        [ [ 2, 0 ], [ 2, 1 ], [ 2, 2 ]],
+        [ [ 0, 0 ], [ 1, 1 ], [ 2, 2 ]],
+        [ [ 0, 2 ], [ 1, 1 ], [ 2, 0 ]]
+    ];
+
+    let player = [ null, null ];
+    let playerTurn = 0;
+    let turnIdx = 0;
+    let possibleMoves = null;
+    let gameOver = false;
+    let space = null;
 
     return {
         checkMove,
@@ -503,58 +672,37 @@ const board = (function() {
         logGrid,
         setPlayers,
         getPossibleMoves,
-        init
+        init,
+        getPlayerTurn,
+        getCurrentPlayer
     }
 })();
 
-const createPlayer = function(_name, _symbolIdx, _color, _cpuLvl) {
-    //const name = _name;
-    //const symbol = _symbol;
-    const color = _color;
+const createPlayer = function(_name, _symbolIdx, _cpuLvl) {
     let score = 0;
     let cpuLvl = _cpuLvl;
     let board = null;
     let playerIdx = null;
-    //let svg = null;
     let symbolIdx = _symbolIdx;
     let nameDiv = null;
     let scoreDiv = null;
     let iconDiv = null;
-
-    // const initSvg = function() {
-    //     const plTemplate = document.querySelector("#symbol-svg");
-    //     svg = plTemplate.content.cloneNode(true).querySelector("svg");
-    //     let svgPath = svg.querySelector("path");
-    //     svgPath.setAttribute("d", getSymbolStr(_symbolIdx));
-    //     let svgTitle = svg.querySelector("title");
-    //     svgTitle.textContent = _name;
-    // }
-    const getScore = function() {
-
-    }
-    const addToScore = function(_num) {
-
-    }
-    const resetScore = function() {
-
-    }
+    
     const promptCpuMove = function() {
         if (this.board === null) {
             console.log("CPU board not found");
             console.log(this.board);
             return;
         }
-        console.log("CPU is making its move");
-        //console.log(this.board.getPossibleMoves());
+
         const cpuMove = getBestCpuMove(this.board.getPossibleMoves());
-        this.board.placeMarker(this.playerIdx, cpuMove.pos[0], cpuMove.pos[1])
-        //logGrid();
-    }
+        this.board.placeMarker(this.playerIdx, cpuMove.pos[0], cpuMove.pos[1]);
+    };
     // Randomly choose among the highest scoring moves.
     const getBestCpuMove = function(_possibleMoves) {
-        //console.log(_possibleMoves);
         let bestMoves = [];
         let move = null;
+
         for (let x = 0; x < 3; x++) {
             for (let y = 0; y < 3; y++) {
                 if (_possibleMoves[x][y].valid) {
@@ -567,28 +715,27 @@ const createPlayer = function(_name, _symbolIdx, _color, _cpuLvl) {
                 }
             }
         }
+
         if (bestMoves.length) {
             const idx = Math.floor(Math.random() * bestMoves.length);
             move = bestMoves[idx];
         }
 
-        // Could be null -- need to check for stalemate somewhere.
-        //console.log(move);
         return move;
-    }
+    };
+
     const checkName = function(_name) {
         if (_name.length > 12) {
             _name = _name.slice(0, 12);
         }
+
         return _name;
-    }
+    };
 
     const name = checkName(_name);
-    //initSvg()
 
     return {
         name,
-        color,
         score,
         cpuLvl,
         board,
@@ -598,112 +745,11 @@ const createPlayer = function(_name, _symbolIdx, _color, _cpuLvl) {
         scoreDiv,
         iconDiv,
         promptCpuMove
-    }
-}
+    };
+};
 
-const p0 = createPlayer("Player 1", 0, "#ff000011", -1);
-const p1 = createPlayer("Player 2", 1, "#0000ff11", 0);
-
-const createIconPane = function(_p0, _p1) {
-    let pane = [];
-    let cancelSvg = [
-        symbol.getCancelSvg(),
-        symbol.getCancelSvg()
-    ]
-    let player = [
-        _p0,
-        _p1
-    ]
-    for (let i = 0; i < 2; i++) {
-        pane.push(document.querySelectorAll(`.icon-select.p${i} > .cell`));
-
-        pane[i].forEach(function(e, j) {
-            e.addEventListener("click", f => {
-                if (!pane[1 - i][j].classList.contains("selected")) {
-                    pane[i].forEach(g => {
-                        g.classList.remove("selected");
-                    });
-                    pane[1 - i].forEach(g => {
-                        g.classList.remove("other-selected");
-                    });
-                    e.classList.add("selected");
-                    player[i].symbolIdx = j;
-                    pane[1 - i][j].classList.add("other-selected");
-                    pane[1 - i][j].appendChild(cancelSvg[1 - i].svg);
-                }
-            });
-            e.appendChild(symbol.getSymbolSvg(j).svg);
-        });
-    }
-    
-    for (let i = 0; i < 2; i++) {
-        pane[i].forEach(function(e, j) {
-            console.log(player[i].symbolIdx);
-            if (j == player[i].symbolIdx) {
-                pane[1 - i][j].classList.add("other-selected");
-                pane[1 - i][j].appendChild(cancelSvg[1 - i].svg);
-                e.classList.add("selected");
-            }
-        });
-    }
-
-    return {
-        pane
-    }
-}
-
-const menu = (function(_p0, _p1) {
-    let icons = createIconPane(_p0, _p1);
-    const menu = document.querySelector(`.menu`);
-    const game = document.querySelector(`.game`);
-    let setupDiv = [];
-    let nameInput = [];
-    let playerTypeDiv = [];
-    let playerTypeCell = [];
-    let startCell = document.querySelector(`.start`);
-    let player = [
-        _p0,
-        _p1
-    ]
-
-
-    for (let i = 0; i < 2; i++) {
-        setupDiv.push(document.querySelector(`.setup.p${i}`));
-        nameInput.push(document.getElementById(`name-p${i}`));
-        playerTypeDiv.push(document.querySelector(`.player-type.p${i}`));
-        playerTypeCell.push(document.querySelectorAll(`.player-type.p${i} > .cell`));
-
-        playerTypeCell[i].forEach(function(c, j) {
-            if (c.getAttribute("cpuLvl") == player[i].cpuLvl) {
-                c.classList.add("selected");
-            }
-
-            c.addEventListener("click", e => {
-                playerTypeCell[i].forEach(f => {
-                    f.classList.remove("selected");
-                });
-                c.classList.add("selected");
-                player[i].cpuLvl = c.getAttribute("cpuLvl");
-            });
-        });
-        nameInput[i].value = player[i].name;
-        nameInput[i].addEventListener("input", e => {
-            // console.log(nameInput[i].value.slice(0, 12));
-            //nameInput[i].value = nameInput[i].value.slice(0, 12);
-            if (nameInput[i].value.length > 12) {
-                //nameInput[i].value = nameInput[i].value.slice(0, 12);
-                nameInput[i].value = player[i].name
-            } else {
-                player[i].name = nameInput[i].value;
-            }
-        });
-    }
-    startCell.addEventListener("click", e => {
-        menu.classList.remove("unhidden");
-        menu.classList.add("hidden");
-        game.classList.remove("hidden");
-        game.classList.add("unhidden");
-        board.setPlayers(player[0], player[1]);
-        board.init(null, true);
-    });
-})(p0, p1);
+setHtml.createMenu(
+    createPlayer("Player 1", 0, -1), 
+    createPlayer("Player 2", 1, 0)
+);
+setHtml.initBoardButtons(board);
