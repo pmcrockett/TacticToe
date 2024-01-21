@@ -484,3 +484,24 @@ svg {
 .symbol-removed {
     animation: 0.25s symbol-exit;
 }
+
+.vol {
+    z-index: 20;
+    justify-self: end;
+    display: grid;
+    justify-items: end;
+    align-items: center;
+    grid-template-columns: auto auto;
+}
+
+.vol > svg {
+    width: min(5vh, 5vw);
+    fill: var(--dark-col);
+    filter: drop-shadow(2px 2px 2px var(--light-col));
+}
+
+.vol > input {
+    accent-color: var(--dark-col);
+    filter: drop-shadow(2px 2px 2px var(--light-col));
+    width: min(15vh, 15vw);
+}

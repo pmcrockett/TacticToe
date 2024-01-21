@@ -136,6 +136,14 @@ const symbol = (function() {
         return "M3 3H7V10.5C7 12.43 8.57 14 10.5 14H13V10L20 16L13 22V18H10.5C6.36 18 3 14.64 3 10.5V3Z";
     };
 
+    const getHiVolStr = function() {
+        return "M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.84 14,18.7V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.76 16.5,12M3,9V15H7L12,20V4L7,9H3Z";
+    };
+
+    const getMuteStr = function() {
+        return "M12,4L9.91,6.09L12,8.18M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.46 14,18.7V20.77C15.38,20.45 16.63,19.82 17.68,18.96L19.73,21L21,19.73L12,10.73M19,12C19,12.94 18.8,13.82 18.46,14.64L19.97,16.15C20.62,14.91 21,13.5 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,10.23 15.5,8.71 14,7.97V10.18L16.45,12.63C16.5,12.43 16.5,12.21 16.5,12Z";
+    };
+
     return {
         getSymbolStr,
         getSymbolName,
@@ -146,7 +154,9 @@ const symbol = (function() {
         getLeftArrowSvg,
         getRightArrowSvg,
         getLeftArrowStr,
-        getRightArrowStr
+        getRightArrowStr,
+        getHiVolStr,
+        getMuteStr
     };
 })();
 
@@ -157,10 +167,13 @@ const setHtml = (function() {
             e.addEventListener("click", f => {clickBoardCell(e, _board)}, false);
         });
 
-        playAgainButton.addEventListener("click", _board.init);
+        playAgainButton.addEventListener("click", e => {
+            audio.click1();
+            _board.init();
+        });
 
         backToMenuButton.forEach(b => {
-            b.addEventListener("click", clickBoardBack);
+            b.addEventListener("click", e => {clickBoardBack(_board)});
             
             if (b.classList.contains("scoreboard-button")) {
                 let svg = symbol.getBackSvg();
@@ -182,8 +195,10 @@ const setHtml = (function() {
         }
     };
 
-    const clickBoardBack = function() {
+    const clickBoardBack = function(_board) {
+        _board.forceGameOver();
         removeBoardCellSymbols();
+        audio.click1();
         window.setTimeout(function() {
             game.classList.remove("unhidden");
             game.classList.add("hidden");
@@ -272,6 +287,7 @@ const setHtml = (function() {
     const startGameOver = function(_winInfo, _lines, _player) {
         boardDiv.classList.add("game-over");
         window.setTimeout(showGameOver, 500, _winInfo, _lines, _player);
+        window.setTimeout(audio.win, 250);
     };
 
     const showGameOver = function(_winInfo, _lines, _player) {
@@ -344,6 +360,8 @@ const setHtml = (function() {
             _player.symbolIdx = _iconIdx;
             _panes[1 - _paneIdx][_iconIdx].classList.add("other-selected");
             _panes[1 - _paneIdx][_iconIdx].appendChild(_cancelSvg[1 - _paneIdx].svg);
+
+            audio.click2();
         }
     };
 
@@ -375,6 +393,8 @@ const setHtml = (function() {
         }
 
         startCell.addEventListener("click", e => {clickMenuStart(player[0], player[1])});
+
+        volRange.addEventListener("input", clickVol);
     };
 
     const clickMenuPlayerType = function(_cells, _cellIdx, _player) {
@@ -384,6 +404,8 @@ const setHtml = (function() {
 
         _cells[_cellIdx].classList.add("selected");
         _player.cpuLvl = _cells[_cellIdx].getAttribute("cpuLvl");
+
+        audio.click2();
     };
 
     const clickMenuStart = function(_p0, _p1) {
@@ -393,6 +415,8 @@ const setHtml = (function() {
         game.classList.add("unhidden");
         board.setPlayers(_p0, _p1);
         board.init(null, true);
+
+        audio.click1();
     };
 
     const limitNameLength = function(_nameInput, _player) {
@@ -401,15 +425,28 @@ const setHtml = (function() {
         } else {
             _player.name = _nameInput.value;
         }
+    };
+
+    const clickVol = function() {
+        let vol = volRange.value;
+        audio.setVol(vol);
+
+        if (vol > 0) {
+            volSvgPath.setAttribute("d", symbol.getHiVolStr());
+        } else {
+            volSvgPath.setAttribute("d", symbol.getMuteStr());
+        }
     }
 
     // Menu
-    const menu = document.querySelector(`.menu`);
+    const menu = document.querySelector(".menu");
     let setupDiv = [];
     let nameInput = [];
     let playerTypeDiv = [];
     let playerTypeCell = [];
-    let startCell = document.querySelector(`.start`);
+    let startCell = document.querySelector(".start");
+    const volRange = document.querySelector(".vol > input");
+    const volSvgPath = document.querySelector(".vol > svg > path");
 
     // Board
     const game = document.querySelector(`.game`);
@@ -436,6 +473,43 @@ const setHtml = (function() {
         placePlayerBoardMarker,
         startGameOver,
         createMenu
+    };
+})();
+
+const audio = (function() {
+    const click1Snd = new Audio("./resources/Click1.wav");
+    const click2Snd = new Audio("./resources/Click2.wav");
+    const player1MoveSnd = new Audio("./resources/Player1Move.wav");
+    const player2MoveSnd = new Audio("./resources/Player2Move.wav");
+    const winSnd = new Audio("./resources/Win.wav");
+
+    let vol = 0.5;
+
+    const playSnd = function(_snd) {
+        _snd.volume = vol;
+        if (_snd.readyState >= 4) {
+            _snd.load();
+            _snd.play();
+        }
+    };
+
+    const setVol = function(_vol) {
+        vol = _vol;
+    };
+
+    const click1 = function() {playSnd(click1Snd)};
+    const click2 = function() {playSnd(click2Snd)};
+    const player1Move = function() {playSnd(player1MoveSnd)};
+    const player2Move = function() {playSnd(player2MoveSnd)};
+    const win = function() {playSnd(winSnd)};
+
+    return {
+        click1,
+        click2,
+        player1Move,
+        player2Move,
+        win,
+        setVol
     };
 })();
 
@@ -612,11 +686,20 @@ const board = (function() {
                 _playerIdx == playerTurn) {
             space[_x][_y] = _playerIdx;
             setHtml.placePlayerBoardMarker(_x, _y, getCurrentPlayer());
+            
+            if (_playerIdx) {
+                audio.player2Move();
+            } else {
+                audio.player1Move();
+            }
+
             startNextTurn(possibleMoves[_x][_y].winLine);
         }
     };
 
     const endGame = function(_winInfo) {
+        if (gameOver) return true;
+
         if (_winInfo.length || (turnIdx >= 9)) {
             setHtml.startGameOver(_winInfo, line, getCurrentPlayer());
 
@@ -631,6 +714,10 @@ const board = (function() {
         }
 
         return false;
+    };
+
+    const forceGameOver = function() {
+        gameOver = true;
     };
 
     const logGrid = function() {
@@ -678,7 +765,8 @@ const board = (function() {
         getPossibleMoves,
         init,
         getPlayerTurn,
-        getCurrentPlayer
+        getCurrentPlayer,
+        forceGameOver
     }
 })();
 
