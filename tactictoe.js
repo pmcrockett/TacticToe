@@ -120,12 +120,12 @@ const symbol = (function() {
 
     const getLeftArrowSvg = function() {
         return getSymbolSvg(getLeftArrowStr(), 
-            "Back to menu");
+            "");
     };
 
     const getRightArrowSvg = function() {
         return getSymbolSvg(getRightArrowStr, 
-            "Back to menu");
+            "");
     };
 
     const getLeftArrowStr = function() {

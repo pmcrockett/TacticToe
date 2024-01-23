@@ -504,4 +504,5 @@ svg {
     accent-color: var(--dark-col);
     filter: drop-shadow(2px 2px 2px var(--light-col));
     width: min(15vh, 15vw);
+    cursor: pointer;
 }
